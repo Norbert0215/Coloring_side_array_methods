@@ -30,6 +30,77 @@ const makeBoxes = () =>{
     const content = data.map( ({number}) => `<div id="${number}" class="box">${number}</div>` );
     return content
 }
+
+const getInputValue = () =>{
+    return document.querySelector("#num").value;
+}
+
+const checkValue = () =>{
+    const value = getInputValue();
+    if(!value.trim()){
+        return [false,0];
+    }
+    if(isNaN(value)){
+        return [false,0];
+    }
+    const currentValue = Number(value)
+    if(currentValue < 1 ||currentValue > 15 ){
+        return [false,0];
+    }
+    return[true,currentValue]
+}
+
+const rndNum = () =>{
+    return Math.floor(Math.random()*256)
+}
+
+const randomColor = () =>{
+    const r = rndNum();
+    const g = rndNum();
+    const b = rndNum();
+    return [r,g,b]
+}
+
+function sendErrorMessage(){
+    alert("Helytelen értéket adott meg!")
+}
+
+const coloringBox = () =>{
+    const [isValid, number] = checkValue();
+    if(!isValid){
+        sendErrorMessage();
+        return;
+    }
+    const boxes = document.querySelectorAll(".box")
+    
+    const box = Array.from(boxes).find(b => Number(b.id) === number);
+    const [r,g,b] = randomColor();
+    box.style.backgroundColor = `rgb(${r},${g},${b})`;
+}
+
+function clearInput(){
+    const inputElement = document.querySelector("#num")
+    inputElement.value = "";
+    inputElement.focus()
+}
+
+const coloring = () =>{
+    const button = document.querySelector("#szinez")
+    button.addEventListener("click",()=>{
+        coloringBox();
+        clearInput();
+    });
+    
+}
+
+const reset = ()=>{
+    const torol = document.querySelector("#torol")
+    torol.addEventListener("click",()=>{
+        renderBoxes();
+        clearInput();
+    })
+}
+
 //A négyzetek megjelenítése a HTML-ben
 const renderBoxes = () => {
     const boxesContainer = document.querySelector(".boxes");
@@ -47,7 +118,8 @@ const renderBoxes = () => {
 
 document.addEventListener("DOMContentLoaded", () =>{
     renderBoxes();
-    const boxes = document.querySelector(".box");
+    coloring();
+    reset();
     
 });
 
